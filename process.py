@@ -17,7 +17,7 @@ query_data_by_id_sql = """
 """
 
 cur_dir = os.path.dirname(__file__)
-store_dir = "{}\\pdf_export".format(cur_dir)
+store_dir = "{}\\export".format(cur_dir)
 db_file = "{}\\test.db".format(cur_dir)
 
 def create_dir(dir):
