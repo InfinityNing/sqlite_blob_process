@@ -29,12 +29,53 @@ def create_dir(dir):
 
 def store_file(dir, title, blob_data):
     """
-    for each blob_data, save as sepreate file
+    for each blob_data, save as seperate file
     """
-    file_path = "{}\\{}.pdf".format(dir, title)
+    file_path = ("{}\\{}.pdf" if is_pdf(blob_data) else "{}\\{}").format(dir, title)
     with open(file_path, "wb") as f:
         f.write(blob_data)
     print("\tstored: {}".format(file_path))
+
+def is_pdf(blob_data):
+    """
+    judge if blob data matches pdf file format
+    """
+    if blob_data[4:8].hex() != "25504446":
+        # print_head(blob_data=blob_data)
+        return False
+    return True
+
+def print_head(blob_data):
+    """
+    print top 72 bytes of blob data
+    """
+    print(
+        blob_data[:8].hex() + "\t" + 
+        blob_data[8:16].hex() + "\t" + 
+        blob_data[16:24].hex() + "\t" + 
+        blob_data[24:32].hex() + "\t" + 
+        blob_data[32:40].hex() + "\t" + 
+        blob_data[40:48].hex() + "\t" + 
+        blob_data[48:56].hex() + "\t" + 
+        blob_data[56:64].hex() + "\t" + 
+        blob_data[64:72].hex()
+    )
+
+def print_tail(blob_data):
+    """
+    print last 72 bytes of blob data
+    """
+    print(
+        blob_data[-72:-64].hex() + "\t" + 
+        blob_data[-64:-56].hex() + "\t" + 
+        blob_data[-56:-48].hex() + "\t" + 
+        blob_data[-48:-40].hex() + "\t" + 
+        blob_data[-40:-32].hex() + "\t" + 
+        blob_data[-32:-24].hex() + "\t" + 
+        blob_data[-24:-16].hex() + "\t" + 
+        blob_data[-16:-8].hex() + "\t" + 
+        blob_data[-8:].hex()
+    )
 
 def process():
     """
@@ -54,7 +95,7 @@ def process():
         exit(0)
     create_dir(store_dir)
     for index, id in enumerate(ids):
-        # query blob_data seprately, avoid taking too much memory
+        # query blob_data seperately, avoid taking too much memory
         print("processing: {}/{}".format(index + 1, total))
         cursor.execute(query_data_by_id_sql.format(id[0]))
         result = cursor.fetchone()
